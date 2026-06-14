@@ -19,7 +19,7 @@ import fetch from 'node-fetch';
 import session from 'express-session';
 import passport from './auth.js';
 import { hashPassword } from './auth.js';
-import { initializeDatabase, userDb, sessionDb, messageDb, apiKeyDb, artifactDb, imageDb, checkRateLimiting } from './database.js';
+import { initializeDatabase, userDb, sessionDb, messageDb, apiKeyDb, artifactDb, imageDb, globalMemoryDb, checkRateLimiting } from './database.js';
 import db from './database.js';
 import { SQLiteSessionStore } from './sessionStore.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -93,6 +93,9 @@ app.use(cors({
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:3000',
+      'http://187.77.116.90',
+      'http://187.77.116.90:80',
+      'https://187.77.116.90',
       'https://deepernova.com',
       'https://www.deepernova.com',
       'https://indoai-sigma.vercel.app',
@@ -2016,7 +2019,6 @@ app.get('/api/memory/global', (req, res) => {
     }
 
     const userId = req.user.id;
-    const { globalMemoryDb } = require('./database.js');
     const record = globalMemoryDb.getOrCreate(userId);
 
     res.json({
@@ -2074,7 +2076,6 @@ app.post('/api/memory/global/update', async (req, res) => {
       return res.status(400).json({ error: 'recentMessages must be an array' });
     }
 
-    const { globalMemoryDb } = require('./database.js');
     const { updateGlobalMemory } = await import('./memoryWriterService.js');
 
     // Get current memory
